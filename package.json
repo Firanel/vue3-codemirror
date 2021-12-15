@@ -10,6 +10,12 @@
     "cm:build": "cd codemirror.next && npm run prepare"
   },
   "dependencies": {
+    "@codemirror/basic-setup": "^0.19.1",
+    "@codemirror/lang-javascript": "^0.19.3",
+    "@codemirror/language": "^0.19.7",
+    "@lezer/common": "^0.15.10",
+    "@lezer/lr": "^0.15.5",
+    "@lezer/php": "^0.15.0",
     "core-js": "^3.6.5",
     "vue": "^3.0.0"
   },

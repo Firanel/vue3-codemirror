@@ -1,18 +1,14 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <codemirror
+    doc=""
+    capture-tab
+    lang="lua"
+  />
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-import HelloWorld from './components/HelloWorld.vue'
-
-export default defineComponent({
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-})
+<script setup lang="ts">
+import Codemirror from './components/Codemirror.vue'
 </script>
 
 <style lang="scss">
@@ -20,8 +16,12 @@ export default defineComponent({
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  // text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.codemirror {
+  border: 1px solid grey;
 }
 </style>
