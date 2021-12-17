@@ -2,6 +2,7 @@
   <img alt="Vue logo" src="./assets/logo.png">
   <label><input type="checkbox" v-model="captureTab">Capture tab</label>
   <codemirror
+    ref="editor"
     doc=""
     :capture-tab="captureTab"
     :lang="javascript"
@@ -11,9 +12,15 @@
 <script setup lang="ts">
 import Codemirror from './components/Codemirror.vue'
 import { javascript } from '@codemirror/lang-javascript'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const captureTab = ref(true)
+const editor = ref<Codemirror>()
+
+onMounted(async () => {
+  // await nextTick()
+  // editor.value.injectExtension(EditorState.tabSize.of(4))
+})
 </script>
 
 <style lang="scss">

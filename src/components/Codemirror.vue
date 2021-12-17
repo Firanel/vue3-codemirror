@@ -1,11 +1,10 @@
 <template>
-  <div>
-    <div class="codemirror" ref="rootEl" key="editor"/>
-  </div>
+  <div class="codemirror" ref="rootEl" key="editor"/>
 </template>
 
 <script setup lang="ts">
 import {
+  onBeforeUnmount,
   onMounted,
   ref,
   watch,
@@ -14,7 +13,7 @@ import {
   EditorState,
   basicSetup,
 } from '@codemirror/basic-setup'
-import { Compartment } from '@codemirror/state'
+import { Compartment, StateEffect, Extension } from '@codemirror/state'
 import { EditorView, keymap } from '@codemirror/view'
 import { indentWithTab } from '@codemirror/commands'
 import { LanguageSupport } from '@codemirror/language'
@@ -22,7 +21,6 @@ import { LanguageSupport } from '@codemirror/language'
 // eslint-disable-next-line no-undef
 const props = defineProps<{
   doc?: string
-  tabSize?: number
   captureTab?: boolean
   lang?:() => LanguageSupport
 }>()
@@ -31,8 +29,8 @@ const rootEl = ref<HTMLElement>()
 const view = ref<EditorView>()
 
 const language = new Compartment()
-const tabSize = new Compartment()
 const captureTab = new Compartment()
+const extensions: Extension[] = []
 
 watch(() => props.captureTab, () => {
   if (!view.value) return
@@ -50,29 +48,49 @@ watch(() => props.lang, () => {
   })
 })
 
-watch(() => props.tabSize, () => {
-  if (!view.value) return
-  view.value.dispatch({
-    effects: tabSize.reconfigure(EditorState.tabSize.of(props.tabSize || 2)),
-  })
-})
-
 onMounted(() => {
-  const extensions = [
-    basicSetup,
-    captureTab.of(props.captureTab ? keymap.of([indentWithTab]) : []),
-    language.of(props.lang === undefined ? [] : props.lang()),
-    tabSize.of(EditorState.tabSize.of(props.tabSize || 2)),
-  ]
-
   const state = EditorState.create({
     doc: 'console.log("Hello world!")',
-    extensions,
+    extensions: [
+      basicSetup,
+      captureTab.of(props.captureTab ? keymap.of([indentWithTab]) : []),
+      language.of(props.lang === undefined ? [] : props.lang()),
+    ],
   })
 
   view.value = new EditorView({
     state: state,
     parent: rootEl.value,
   })
+
+  for (const extension of extensions) {
+    view.value.dispatch({
+      effects: StateEffect.appendConfig.of(extension),
+    })
+  }
+})
+
+onBeforeUnmount(() => {
+  if (!view.value) return
+  view.value.destroy()
+  view.value = undefined
+})
+
+//
+
+function injectExtension (extension: Extension, once = false) {
+  if (!once) {
+    extensions.push(extension)
+  }
+  if (!view.value) return
+  view.value.dispatch({
+    effects: StateEffect.appendConfig.of(extension),
+  })
+}
+
+// eslint-disable-next-line no-undef
+defineExpose({
+  view,
+  injectExtension,
 })
 </script>
