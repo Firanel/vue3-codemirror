@@ -6,7 +6,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --target lib --name Codemirror src/components/Codemirror.vue",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "prepare": "npm run build"
   },
   "dependencies": {
     "@codemirror/basic-setup": "^0.19.1",
