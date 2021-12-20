@@ -3,9 +3,11 @@
   <label><input type="checkbox" v-model="captureTab">Capture tab</label>
   <codemirror
     ref="editor"
-    doc=""
+    :doc="value"
     :capture-tab="captureTab"
     :lang="javascript"
+    @input="onInput"
+    @update:value="onUpdate"
   />
 </template>
 
@@ -16,11 +18,23 @@ import { onMounted, ref } from 'vue'
 
 const captureTab = ref(true)
 const editor = ref<Codemirror>()
+const value = ref('console.log("Hello World!")')
 
 onMounted(async () => {
   // await nextTick()
   // editor.value.injectExtension(EditorState.tabSize.of(4))
+  // setTimeout(() => {
+  //   value.value = 'Hello World!'
+  // }, 5000)
 })
+
+function onInput () {
+  console.log('input', ...arguments)
+}
+
+function onUpdate () {
+  console.log('update', ...arguments)
+}
 </script>
 
 <style lang="scss">
